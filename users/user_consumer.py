@@ -1,9 +1,6 @@
 import pika
-
-from pika.exchange_type import ExchangeType
 from pika.exceptions import AMQPError
-
-
+from pika.exchange_type import ExchangeType
 
 
 def on_message_received(ch, method, properties, body):
@@ -11,17 +8,19 @@ def on_message_received(ch, method, properties, body):
 
 
 def create_channel():
-    """Моздает и возвращает канал"""
+    """Создает и возвращает канал."""
     try:
         connection_parameters = pika.ConnectionParameters('localhost')
         connection = pika.BlockingConnection(connection_parameters)
         return connection.channel()
-    except AMQPError as vonnection_error:
+    except AMQPError as connection_error:
         print(f"Error while connectiong to RabbitMQ: {connection_error}")
 
 
-def consume_message(exchange_name='', routing_key=[], queue_name=None):
-    """Запускаем консюмера"""
+def consume_message(exchange_name='', routing_key: list=None, queue_name=None):
+    """Запускаем консюмера."""
+    if not routing_key:
+        routing_key = []
 
     channel = create_channel()
     if not channel:
@@ -31,26 +30,29 @@ def consume_message(exchange_name='', routing_key=[], queue_name=None):
         if queue_name:
             channel.queue_declare(queue=queue_name)
             channel.basic_consume(
-                queue=queue_name, 
+                queue=queue_name,
                 auto_ack=True,
                 on_message_callback=on_message_received
             )
 
         channel.exchange_declare(
-            exchange=exchange_name, 
+            exchange=exchange_name,
             exchange_type=ExchangeType.direct
         )
         queue = channel.queue_declare(queue='', exclusive=True)
 
         for key in routing_key:
             channel.queue_bind(
-                exchange=exchange_name, 
-                queue=queue.method.queue, 
+                exchange=exchange_name,
+                queue=queue.method.queue,
                 routing_key=key
             )
 
-        channel.basic_consume(queue=queue.method.queue, auto_ack=True,
-            on_message_callback=on_message_received)
+        channel.basic_consume(
+            queue=queue.method.queue,
+            auto_ack=True,
+            on_message_callback=on_message_received
+        )
 
         print('Payments Starting Consuming')
         channel.start_consuming()

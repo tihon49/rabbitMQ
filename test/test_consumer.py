@@ -6,7 +6,10 @@ def on_message_received(ch, method, properties, body):
     print(f'Analytics - received new message: {body}')
 
 
-def consume_message(exchange_name='', routing_key=[], queue_name=None):
+def consume_message(exchange_name='', routing_key: list=None, queue_name=None):
+    if not routing_key:
+        routing_key = []
+
     connection_parameters = pika.ConnectionParameters('localhost')
     connection = pika.BlockingConnection(connection_parameters)
     channel = connection.channel()
@@ -32,8 +35,11 @@ def consume_message(exchange_name='', routing_key=[], queue_name=None):
             routing_key=key
         )
 
-    channel.basic_consume(queue=queue.method.queue, auto_ack=True,
-        on_message_callback=on_message_received)
+    channel.basic_consume(
+        queue=queue.method.queue,
+        auto_ack=True,
+        on_message_callback=on_message_received
+    )
 
     print('Payments Starting Consuming')
     channel.start_consuming()

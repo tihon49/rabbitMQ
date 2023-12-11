@@ -1,0 +1,64 @@
+[project]
+# Версия Python интерпретатора.
+requires-python = ">=3.11"
+
+[tool.ruff]
+# Длина строк
+line-length = 88
+# Показывать предложения по исправлению
+show-fixes = true
+# Игнорировать определённые ошибки
+# https://docs.astral.sh/ruff/rules/
+ignore = [
+    "D100",
+    "D101",
+    "D102",
+    "D103",
+    "D104",
+    "D105",
+    "D106",
+    "D107",
+    "D301",
+    "I001",
+]
+
+# Исключаемые файлы
+exclude = ["frontend/", "settings.py", "wsgi.py", "venv", ]
+# Правила для проверки
+select = [
+    # pycodestyle
+    "E",
+    # Pyflakes
+    "F",
+    # pyupgrade
+    "UP",
+    # flake8-bugbear
+    "B",
+    # flake8-simplmax-line-length = 88ify
+    "SIM",
+    # isort
+    "I",
+    # pydocstyle
+    "D",
+    # pycodestyle
+    "W",
+]
+
+[tool.ruff.format]
+# Использовать одинарные кавычки не для докстрингов.
+# Опция влияет только на то, как ruff будет автоматически
+# форматировать строки при исправлении кода, если запускать ruff с флагом --fix
+# (ruff check . --fix).
+quote-style = "single"
+
+[tool.ruff.lint.flake8-quotes]
+# Использовать двойные кавычки для докстрингов.
+docstring-quotes = "double"
+
+
+[tool.flake8]
+# Добавляем некоторые правила для проверки из flake8,
+# так как ruff их ещё не поддерживает.
+# https://github.com/astral-sh/ruff/issues/4666
+select = ["E124", "E125", "E128", "E129", "E302", "E303", "E131", "E261", "E262"]
+exclude = ["/frontend", "settings.py", "wsgi.py", "venv", "migrations"]
