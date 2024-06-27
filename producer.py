@@ -58,18 +58,21 @@ def main():
         routing_key='both',
         message='This message needs to be routed'
     )
+
     #сообщение только для payments консьюмера
     publish_message(
         exchange_name='routing',
         routing_key='paymentsonly',
         message='Message for payments consumer'
     )
+
     #сообщение для выполнения по очереди всеми консьюмерами
     publish_message(
         queue_name='byturn',
         routing_key='byturn',
         message='Hello Mazafaka!!!!'
     )
+
     #сообщение только  для test консьюмера
     publish_message(
         exchange_name='test',
@@ -77,6 +80,6 @@ def main():
         message='Nu privet, zasranec'
     )
 
+
 if __name__ == '__main__':
     main()
-
