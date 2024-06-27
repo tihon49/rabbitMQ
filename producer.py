@@ -25,8 +25,10 @@ def publish_message(
     """ Публикует сообщение """
 
     channel = create_channel()
+
     if not channel:
         return
+
     try:
         if queue_name:
             channel.queue_declare(queue=queue_name)
@@ -50,9 +52,7 @@ def main():
     publish_message(exchange_name='routing', routing_key='both', message='This message needs to be routed')
     publish_message(exchange_name='routing', routing_key='paymentsonly', message='Message for payments consumer')
     publish_message(queue_name='byturn', routing_key='byturn', message='Hello Mazafaka!!!!')
-
     publish_message(exchange_name='test', routing_key='test', message='Nu privet, zasranec')
-
 
 
 if __name__ == '__main__':
